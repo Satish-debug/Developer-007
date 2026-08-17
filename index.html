@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEVELOPER-007 | Satish</title>
+<style>
+body{margin:0;background:black;color:#00ff00;font-family:monospace;overflow:hidden}
+canvas{position:fixed;top:0;left:0;z-index:-1}
+.box{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
+h1{font-size:2.8rem;text-shadow:0 0 20px #00ff00}
+#secret{margin-top:20px;font-size:1.3rem;color:white;display:none;border:1px solid #00ff00;padding:15px;box-shadow:0 0 15px #00ff00}
+button{margin-top:20px;padding:12px 28px;background:transparent;border:2px solid #00ff00;color:#00ff00;font-size:1rem;cursor:pointer}
+button:hover{background:#00ff00;color:black}
+#count-box{margin-top:10px;color:#888}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="box">
+<h1 id="type"></h1>
+<div id="count-box">Visitors: <span id="count">Loading...</span></div>
+<button onclick="hack()">Unlock Secret</button>
+<div id="secret"></div>
+</div>
+<script>
+  const BACKEND_URL = "https://developer-007.vercel.app/api/secret";
+  const COUNT_URL = "https://developer-007.vercel.app/api/visitors";
+  
+  // Typewriter effect
+  let t="DEVELOPER-007",i=0;
+  function type(){if(i<t.length){document.getElementById("type").innerHTML+=t.charAt(i);i++;setTimeout(type,150);}}
+  type();
+  
+  // FIX: Visitor Count - Yo line le undefined hataucha
+  fetch(COUNT_URL)
+    .then(res => res.json())
+    .then(data => {
+      // Backend le जे नाममा पठाएपनि चल्ने बनाको
+      let num = data.count || data.visitors || data.total || 1;
+      document.getElementById("count").innerText = num;
+    })
+    .catch(err => {
+      document.getElementById("count").innerText = "007";
+    });
+  
+  function hack(){
+    document.getElementById("secret").innerText = "Hacking...";
+    fetch(BACKEND_URL)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("secret").innerText = data.message || data.secret;
+      });
+  }
+  
+  // Matrix rain code jastai cha, change nagarnu
+  </script>
