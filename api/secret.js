@@ -1,19 +1,17 @@
 export default async function handler(req, res) {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
-  const ua = req.headers['user-agent'] || 'Unknown Device';
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || 'Unknown';
   const time = new Date().toLocaleString("en-NP", {timeZone: "Asia/Kathmandu"});
-
-  // 1. Email ma pathaune - FREE service
+  const ua = req.headers['user-agent'] || 'No UA';
   try {
     await fetch("https://formsubmit.co/ajax/sc240510@gmail.com", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({
-        subject: `🎯 NEW VISITOR! IP: ${ip}`,
-        message: `Kasaile timro site kholyo!\n\nIP: ${ip}\nDevice: ${ua}\nTime: ${time}\n\n- Developer 007 System`
+        name: "Visitor Alert",
+        subject: `NEW VISITOR IP: ${ip}`,
+        message: `IP: ${ip}\nTime: ${time}\nBrowser: ${ua}\nPage: /api/secret`
       })
     });
-  } catch(e) { console.log("email error", e) }
-
-  res.status(200).json({ ok: true, ip });
+  } catch(e){}
+  res.status(200).json({ ok: true, ip, time });
 }
